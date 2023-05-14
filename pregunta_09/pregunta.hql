@@ -48,3 +48,9 @@ LOAD DATA LOCAL INPATH 'data1.csv' INTO TABLE tbl1;
 
 INSERT OVERWRITE LOCAL DIRECTORY './output'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+
+SELECT tbl0.c1, temp.key, temp.value
+FROM tbl0 INNER JOIN (
+    SELECT c1, key, value FROM tbl1 LATERAL VIEW EXPLODE(c4) tbl1 AS key, value
+) AS temp
+ON tbl0.c1 = temp.c1 AND tbl0.c2 = temp.key
